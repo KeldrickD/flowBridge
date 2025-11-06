@@ -1,0 +1,19 @@
+{
+  "name": "flowbridge-backend",
+  "private": true,
+  "workspaces": [
+    "services/*"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "test": "pnpm -r test",
+    "dev": "pnpm -r dev"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.4.0",
+    "eslint": "^9.0.0"
+  }
+}
+
+

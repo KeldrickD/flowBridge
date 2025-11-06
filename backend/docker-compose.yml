@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: flowbridge
+      POSTGRES_PASSWORD: flowbridge
+      POSTGRES_DB: flowbridge
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  api-gateway:
+    build: ./services/api-gateway
+    environment:
+      PORT: 4000
+      JWT_SECRET: dev-secret
+      ORCHESTRATOR_URL: http://payment-orchestrator:4100
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "4000:4000"
+
+  payment-orchestrator:
+    build: ./services/payment-orchestrator
+    environment:
+      REDIS_URL: redis://redis:6379
+      ZKSYNC_RPC_URL: wss://testnet.era.zksync.dev
+      PAYMENT_ROUTER_ADDRESS: "0xYourDeployedRouter"
+      BANK_URL: http://bank-mock:4500
+      DATABASE_URL: postgresql://flowbridge:flowbridge@postgres:5432/flowbridge
+    depends_on:
+      - redis
+      - bank-mock
+
+  bank-mock:
+    build: ./services/bank-mock
+    environment:
+      PORT: 4500
+    ports:
+      - "4500:4500"
+
+

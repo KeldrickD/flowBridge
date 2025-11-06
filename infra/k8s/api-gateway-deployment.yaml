@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flowbridge-api-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: ghcr.io/yourname/flowbridge-api-gateway:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: flowbridge-secrets
+                  key: jwtSecret
+            - name: ORCHESTRATOR_URL
+              value: http://payment-orchestrator:4100
+
+
