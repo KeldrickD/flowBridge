@@ -22,4 +22,29 @@ export function formatCurrencyShort(amount: number, currency = "fbUSD"): string 
   return `${sign}${formatted} ${currency}`;
 }
 
+// Intl-based helpers (compact and consistent across UI)
+const integerFormatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 });
+const compactNumberFormatter = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
+const amountFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+export function formatInteger(value: number): string {
+  return integerFormatter.format(value);
+}
+
+export function formatCompactNumber(value: number): string {
+  return compactNumberFormatter.format(value);
+}
+
+export function formatAmount(value: number): string {
+  return amountFormatter.format(value);
+}
+
+export function formatIsoTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleTimeString(undefined, { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+export function formatIsoDateTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}

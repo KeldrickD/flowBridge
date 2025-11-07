@@ -1,16 +1,31 @@
 "use client";
 import { DashboardEvent } from "@/types/dashboard";
+import { formatIsoTime } from "@/lib/format";
 
 type Props = {
   events: DashboardEvent[];
 };
 
 function formatTime(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString(undefined, { hour12: false });
+  return formatIsoTime(iso);
 }
 
 export default function EventTimeline({ events }: Props) {
+  function prettyDescription(event: DashboardEvent): string {
+    if (event.description && event.description !== event.type) {
+      return event.description;
+    }
+    switch (event.type) {
+      case "payment.settled":
+        return "Payment settled on-chain and confirmed by orchestrator.";
+      case "payment.failed":
+        return "Payment failed – investigate off-chain reference and escrow.";
+      case "payment.initiated":
+        return "Payment initiated and awaiting on-chain settlement.";
+      default:
+        return event.type;
+    }
+  }
   return (
     <section className="flex flex-1 flex-col rounded-2xl border border-slate-800 bg-slate-900/50 p-4 shadow-sm shadow-black/40">
       <div className="mb-2 flex items-center justify-between">
@@ -29,7 +44,7 @@ export default function EventTimeline({ events }: Props) {
                   {e.type}
                 </span>
               </div>
-              <p className="mt-1 text-[11px] leading-snug text-slate-200">{e.description}</p>
+              <p className="mt-1 text-[11px] leading-snug text-slate-200">{prettyDescription(e)}</p>
             </li>
           ))}
         </ul>

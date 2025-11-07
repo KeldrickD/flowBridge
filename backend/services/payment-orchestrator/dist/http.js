@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createHttpServer = createHttpServer;
 const fastify_1 = __importDefault(require("fastify"));
 const db_1 = require("./lib/db");
+const TOKEN_DECIMALS = 18;
 async function getStatsSummary() {
     return {
         totalPayments24h: 1248,
@@ -69,7 +70,9 @@ async function createHttpServer() {
             paymentHash: row.payment_hash,
             payerAddress: row.payer_address,
             payeeAddress: row.payee_address,
-            amount: Number(row.amount_wei),
+            amount: row.amount_wei != null
+                ? Number(row.amount_wei) / Math.pow(10, TOKEN_DECIMALS)
+                : 0,
             currency: row.currency || "fbUSD",
             status: row.status,
             latencyMs: row.latency_ms !== null ? Number(row.latency_ms) : null,
