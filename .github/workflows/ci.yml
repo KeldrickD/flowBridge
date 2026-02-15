@@ -35,6 +35,10 @@ jobs:
         with:
           version: nightly
 
+      - name: Install Foundry dependencies
+        working-directory: contracts
+        run: forge install foundry-rs/forge-std OpenZeppelin/openzeppelin-contracts@v4.9.6 --no-commit
+
       - name: Contracts build
         working-directory: contracts
         run: forge build
