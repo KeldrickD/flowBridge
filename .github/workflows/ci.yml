@@ -9,6 +9,8 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    env:
+      FOUNDRY_DISABLE_NIGHTLY_WARNING: 1
     steps:
       - uses: actions/checkout@v4
 
@@ -34,8 +36,6 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-        env:
-          FOUNDRY_DISABLE_NIGHTLY_WARNING: 1
 
       - name: Install Foundry dependencies
         working-directory: contracts
