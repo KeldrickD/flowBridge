@@ -63,13 +63,13 @@ contract PaymentRouterTest is Test {
 
     function test_initiatePaymentRevertZeroAmount() public {
         vm.prank(payer);
-        vm.expectRevert(Errors.INVALID_AMOUNT.selector);
+        vm.expectRevert(Errors.INVALID_AMOUNT);
         router.initiatePayment(payee, 0, true, offchainRef, uint64(block.timestamp + 1 days));
     }
 
     function test_initiatePaymentRevertExpired() public {
         vm.prank(payer);
-        vm.expectRevert(Errors.EXPIRED.selector);
+        vm.expectRevert(Errors.EXPIRED);
         router.initiatePayment(payee, 1 ether, true, offchainRef, uint64(block.timestamp));
     }
 
@@ -106,7 +106,7 @@ contract PaymentRouterTest is Test {
     function test_settlePaymentRevertUnauthorized() public {
         bytes32 paymentId = _initEscrowedPayment(1 ether, 1 days);
         vm.prank(attacker);
-        vm.expectRevert(Errors.NOT_AUTHORIZED.selector);
+        vm.expectRevert(Errors.NOT_AUTHORIZED);
         router.settlePayment(paymentId);
     }
 
@@ -147,7 +147,7 @@ contract PaymentRouterTest is Test {
     function test_cancelPaymentRevertBeforeExpiry() public {
         bytes32 paymentId = _initEscrowedPayment(5 ether, 1 days);
         vm.prank(payer);
-        vm.expectRevert(Errors.EXPIRED.selector);
+        vm.expectRevert(Errors.EXPIRED);
         router.cancelPayment(paymentId);
     }
 
@@ -164,7 +164,7 @@ contract PaymentRouterTest is Test {
         bytes32 paymentId = _initEscrowedPayment(5 ether, 1 days);
         vm.warp(block.timestamp + 2 days);
         vm.prank(attacker);
-        vm.expectRevert(Errors.NOT_PAYER.selector);
+        vm.expectRevert(Errors.NOT_PAYER);
         router.cancelPayment(paymentId);
     }
 
